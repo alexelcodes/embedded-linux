@@ -1,0 +1,6 @@
+[
+  {
+    "name": "RPi ARMHF (macOS)",
+    "toolchainFile": "${workspaceFolder}/cmake/toolchain-armhf-macos.cmake"
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug on RPi (gdbserver)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/opt/homebrew/bin/armv7-unknown-linux-gnueabihf-gdb",
+      "preLaunchTask": "Copy built to RPi (scp)",
+      "miDebuggerServerAddress": "| ssh -T rpi gdbserver - '~/${command:cmake.launchTargetFilename}'",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Run (native)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "cwd": "${workspaceFolder}",
+      "MIMode": "lldb",
+      "stopAtEntry": false
+    }
+  ]
+}

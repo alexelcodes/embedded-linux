@@ -1,0 +1,12 @@
+# Build directories
+build/
+
+# Dependencies
+deps/
+
+# Cache
+.cache/
+
+# macOS
+.DS_Store
+*.dSYM/
