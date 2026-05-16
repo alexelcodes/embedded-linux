@@ -66,6 +66,21 @@ Features:
 - polling vs interrupt-style GPIO handling
 - Linux userspace GPIO experiments
 
+### 4. [Raspberry Pi Multi-purpose Knob Controller](./projects/rpi-multipurpose-knob-controller)
+
+Multi-purpose Raspberry Pi controller using a rotary encoder, WS2812 RGB LED, hardware PWM, and POSIX threads.
+
+Features:
+
+- rotary encoder input handling
+- WS2812 RGB LED control using SPI
+- servo motor control using hardware PWM
+- mode switching
+- GPIO control using `libgpiod`
+- multithreading
+- polling-based GPIO input handling
+- signal noise filtering experiments
+
 ---
 
 ## Documentation
