@@ -53,6 +53,19 @@ Features:
 - Linux timing and jitter analysis
 - Raspberry Pi cross-compilation workflow
 
+### 3. [Raspberry Pi GPIO Events and Debounce](./projects/rpi-gpio-events-debounce)
+
+GPIO event handling project using `libgpiod`, POSIX threads, and software debounce on Raspberry Pi.
+
+Features:
+
+- GPIO edge event handling
+- software debounce
+- POSIX threads
+- event-driven input processing
+- polling vs interrupt-style GPIO handling
+- Linux userspace GPIO experiments
+
 ---
 
 ## Documentation
