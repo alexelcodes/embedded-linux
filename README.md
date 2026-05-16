@@ -40,20 +40,33 @@ Features:
 - oscilloscope measurements
 - Raspberry Pi cross-compilation workflow
 
+### 2. [Raspberry Pi Hardware PWM Servo Control](./projects/rpi-hardware-pwm-servo-control)
+
+Hardware PWM servo control project using Raspberry Pi PWM peripherals and POSIX timers.
+
+Features:
+
+- hardware PWM using Linux sysfs
+- servo motor control
+- S-curve motion profile
+- PWM timing experiments
+- Linux timing and jitter analysis
+- Raspberry Pi cross-compilation workflow
+
 ---
 
 ## Documentation
 
 ### Cross-compilation setup
 
-- `docs/macos-rpi-cross-toolchain-setup.md`
+- [macOS Raspberry Pi Cross-Compile Setup](./docs/macos-rpi-cross-toolchain-setup.md)
 
 ### Linux and build system notes
 
-- `docs/c-compilation-process.md`
-- `docs/cross-compilation-libraries.md`
-- `docs/platform-selection.md`
-- `docs/vscode-cpp-workflow.md`
+- [C Compilation Process](./docs/c-compilation-process.md)
+- [Cross-Compilation and Libraries](./docs/cross-compilation-libraries.md)
+- [Platform Selection](./docs/platform-selection.md)
+- [VS Code C/C++ Workflow](./docs/vscode-cpp-workflow.md)
 
 ---
 

@@ -1,8 +1,8 @@
 # Raspberry Pi GPIO Button & LED Controller
 
-Simple Raspberry Pi GPIO project using `libgpiod` and C.
+GPIO button and LED control project using `libgpiod` and C on Raspberry Pi.
 
-The application measures button press duration and generates a matching LED pulse train output. The project was created while experimenting with Linux GPIO userspace access, timing behavior, and Raspberry Pi cross-compilation workflows.
+The application measures button press duration and generates a matching LED pulse train output.
 
 ---
 
@@ -10,12 +10,11 @@ The application measures button press duration and generates a matching LED puls
 
 - GPIO control using `libgpiod`
 - LED output control
-- Button input handling
-- Internal GPIO pull-up configuration
-- Button press duration measurement
+- button input handling
+- internal GPIO pull-up configuration
+- button press duration measurement
 - LED pulse train generation
-- Log file output
-- Cross-compilation support for Raspberry Pi
+- log file output
 
 ---
 
@@ -23,10 +22,10 @@ The application measures button press duration and generates a matching LED puls
 
 - Raspberry Pi running Raspberry Pi OS (Bookworm 32-bit)
 - LED
-- Push button
+- push button
 - 220 Ω resistor
-- Breadboard and jumper wires
-- Oscilloscope (optional)
+- breadboard and jumper wires
+- oscilloscope (optional)
 
 ---
 
@@ -48,34 +47,6 @@ The application measures button press duration and generates a matching LED puls
 ### Raspberry Pi pin locations
 
 ![GPIO mapping](images/pin-locations.png)
-
----
-
-## Build Requirements
-
-Install required packages on Raspberry Pi:
-
-```bash
-sudo apt update
-
-sudo apt install -y \
-    gpiod \
-    libgpiod-dev \
-    gdbserver \
-    build-essential
-```
-
----
-
-## Build
-
-```bash
-mkdir -p build
-cd build
-
-cmake ..
-cmake --build .
-```
 
 ---
 
@@ -103,8 +74,8 @@ press=300 ms, pulses=3
 ## How It Works
 
 - The button input uses a pull-up resistor configuration
-- Released button state = logical `1`
-- Pressed button state = logical `0`
+- released button state = logical `1`
+- pressed button state = logical `0`
 
 The application:
 
