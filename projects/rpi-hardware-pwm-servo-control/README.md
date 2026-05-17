@@ -13,7 +13,6 @@ The project uses Raspberry Pi hardware PWM together with POSIX timers to generat
 - POSIX timers
 - Linux PWM sysfs interface
 - S-curve motion profile
-- jitter-free PWM generation
 
 ---
 
@@ -90,6 +89,17 @@ pwm_bcm2835
 
 ---
 
+## Build
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+---
+
 ## Run
 
 ```bash
@@ -125,8 +135,6 @@ Benefits:
 - less vibration
 - less servo noise
 
-The duty cycle values are updated cyclically to create continuous motion.
-
 ---
 
 ## Software PWM vs Hardware PWM
@@ -135,11 +143,11 @@ Software-generated PWM from Linux userspace introduces timing jitter because the
 
 Hardware PWM avoids this problem because PWM pulses are generated directly by Raspberry Pi hardware.
 
-This makes hardware PWM significantly more stable and suitable for servo control.
+This makes hardware PWM more stable and suitable for servo control.
 
 Additional notes:
 
-- `docs/software-vs-hardware-pwm.md`
+- [Software PWM vs Hardware PWM](docs/software-vs-hardware-pwm.md)
 
 ---
 
@@ -156,11 +164,3 @@ Additional notes:
     ├── pwm_hw.c
     └── pwm_hw.h
 ```
-
----
-
-## Notes
-
-This project uses the Linux PWM sysfs interface.
-
-The sysfs PWM interface is widely supported on embedded Linux systems and provides a simple way to control hardware PWM from userspace applications.
