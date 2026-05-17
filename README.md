@@ -77,6 +77,20 @@ Features:
 - multithreading
 - polling-based GPIO input handling
 
+### 5. [Raspberry Pi MQTT Button Publisher](./projects/rpi-mqtt-button-publisher)
+
+MQTT button event publisher for Raspberry Pi using `libgpiod` and the Eclipse Paho MQTT library.
+
+Features:
+
+- MQTT publish messaging
+- GPIO button input handling
+- internal GPIO pull-up configuration
+- button press and release detection
+- MQTT broker communication
+- Eclipse Paho MQTT client library
+- Raspberry Pi cross-compilation workflow
+
 ---
 
 ## Documentation
