@@ -30,7 +30,7 @@ A **KY-040 rotary encoder** is used to control the device and the encoder push b
 
 - Hardware PWM is used for the servo
 - The encoder push button uses an internal pull-up configured in the software using `libgpiod`
-- The button and rotary encoder are read using **polling in separate threads**
+- The button and rotary encoder are read using polling in separate threads
 - The controller module stores the current state of:
   - operating mode
   - WS2812 color position
@@ -59,6 +59,29 @@ After rebooting the Raspberry Pi, the program may fail if it is started without 
 This happens because the program configures hardware PWM using the `/sys/class/pwm` interface in the `servo.c` module.
 
 After the PWM channels are exported and configured, the program can usually be started without `sudo`.
+
+### Useful GPIO commands
+
+Show all GPIO pin states:
+
+```bash
+pinctrl
+```
+
+Check specific GPIO pins:
+
+```bash
+pinctrl get 18
+pinctrl get 19
+```
+
+For quick testing, an internal pull-up can also be enabled manually:
+
+```bash
+sudo pinctrl set <GPIO_NUMBER> ip pu
+```
+
+The application itself configures the encoder button pull-up using `libgpiod`.
 
 ## Source files
 
@@ -199,8 +222,6 @@ Resulting color transition:
 ```text
 RED → YELLOW → GREEN → CYAN → BLUE → MAGENTA → RED
 ```
-
-This demonstrates that the LED is addressable.
 
 ---
 
