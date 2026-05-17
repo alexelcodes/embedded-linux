@@ -91,6 +91,20 @@ Features:
 - Eclipse Paho MQTT client library
 - Raspberry Pi cross-compilation workflow
 
+### 6. [Raspberry Pi Lighttpd CGI Web Control](./projects/rpi-lighttpd-cgi-web-control)
+
+Embedded web control system using Lighttpd, CGI applications, Python, C, and Raspberry Pi GPIO control.
+
+Features:
+
+- Lighttpd web server configuration
+- Python and C CGI applications
+- GPIO control using `libgpiod`
+- HTTP query parameter parsing
+- JSON-based browser polling
+- browser-to-device communication
+- Raspberry Pi deployment workflow
+
 ---
 
 ## Documentation
