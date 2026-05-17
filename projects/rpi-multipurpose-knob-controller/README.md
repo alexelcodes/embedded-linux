@@ -77,8 +77,6 @@ SPI timing approximation:
 - SPI speed: approximately 6.5 MHz
 - encoded SPI patterns represent WS2812 logical `0` and `1`
 
-This significantly reduces CPU load compared to software-only signal generation.
-
 ### Example WS2812 LED
 
 ![WS2812 RGB LED](images/ws2812.png)
@@ -152,6 +150,17 @@ Expected:
 
 ---
 
+## Build
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+---
+
 ## Run
 
 ```bash
@@ -162,8 +171,6 @@ The application starts separate threads for:
 
 - rotary encoder handling
 - mode button handling
-
-The controller continuously updates the current system state.
 
 ---
 
@@ -229,17 +236,3 @@ Additional notes:
     ├── ws2812_led.c
     └── ws2812_led.h
 ```
-
----
-
-## Notes
-
-This project combines several embedded Linux concepts into a single controller application:
-
-- Linux GPIO userspace control
-- hardware PWM
-- SPI communication
-- multithreading
-- polling-based GPIO input handling
-- state-machine style controller logic
-- timing-sensitive LED protocols
