@@ -1,14 +1,14 @@
 # Embedded Linux
 
-Embedded Linux and cross-compilation projects using Raspberry Pi and C.
+Embedded Linux projects using Raspberry Pi, C, and cross-compilation.
 
 - Linux application development in C
 - Raspberry Pi
 - cross-compilation
 - hardware interfacing
-- debugging and low-level Linux workflows
+- Linux debugging tools
 
-The repository includes setup guides and notes for embedded Linux development.
+The repository also includes setup guides and development notes.
 
 ---
 
@@ -21,7 +21,6 @@ The repository includes setup guides and notes for embedded Linux development.
 - GCC cross toolchains
 - GDB / gdbserver
 - VS Code
-- Linux userspace GPIO
 
 ---
 
@@ -36,7 +35,7 @@ Features:
 - button input handling
 - LED pulse generation
 - internal GPIO pull-up configuration
-- timing experiments with Linux userspace GPIO
+- GPIO timing measurements
 - oscilloscope measurements
 - Raspberry Pi cross-compilation workflow
 
@@ -49,8 +48,7 @@ Features:
 - hardware PWM using Linux sysfs
 - servo motor control
 - S-curve motion profile
-- PWM timing experiments
-- Linux timing and jitter analysis
+- PWM timing measurements
 - Raspberry Pi cross-compilation workflow
 
 ### 3. [Raspberry Pi GPIO Events and Debounce](./projects/rpi-gpio-events-debounce)
@@ -64,7 +62,6 @@ Features:
 - POSIX threads
 - event-driven input processing
 - polling vs interrupt-style GPIO handling
-- Linux userspace GPIO experiments
 
 ### 4. [Raspberry Pi Multi-purpose Knob Controller](./projects/rpi-multipurpose-knob-controller)
 
@@ -79,7 +76,6 @@ Features:
 - GPIO control using `libgpiod`
 - multithreading
 - polling-based GPIO input handling
-- signal noise filtering experiments
 
 ---
 
