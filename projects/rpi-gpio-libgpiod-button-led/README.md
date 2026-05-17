@@ -20,7 +20,7 @@ The application measures button press duration and generates a matching LED puls
 
 ## Hardware
 
-- Raspberry Pi running Raspberry Pi OS (Bookworm 32-bit)
+- Raspberry Pi running Raspberry Pi OS
 - LED
 - push button
 - 220 Ω resistor
@@ -50,6 +50,17 @@ The application measures button press duration and generates a matching LED puls
 
 ---
 
+## Build
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+---
+
 ## Run
 
 ```bash
@@ -73,7 +84,7 @@ press=300 ms, pulses=3
 
 ## How It Works
 
-- The button input uses a pull-up resistor configuration
+- the button input uses a pull-up resistor configuration
 - released button state = logical `1`
 - pressed button state = logical `0`
 
@@ -121,11 +132,3 @@ Example:
 └── src
     └── button-led.c
 ```
-
----
-
-## Notes
-
-This project uses the Linux GPIO character device interface through `libgpiod`.
-
-The older sysfs GPIO interface is deprecated in modern Linux kernels.
