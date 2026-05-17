@@ -1,6 +1,37 @@
 # Development Notes
 
-## Lighttpd Verification
+## Setup Lighttpd
+
+Update system and install web server:
+
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt install lighttpd
+```
+
+---
+
+## Sync Sysroot (after Raspberry Pi update)
+
+Sync required files for cross-compilation:
+
+- headers
+- user-space libraries
+- crt objects
+- runtime libraries
+- dynamic loader
+
+```bash
+rsync -a --delete --rsync-path="sudo rsync" rpi:/usr/include/ ~/rpi/sysroot/usr/include/
+rsync -a --delete --rsync-path="sudo rsync" rpi:/usr/lib/arm-linux-gnueabihf/ ~/rpi/sysroot/usr/lib/arm-linux-gnueabihf/
+rsync -a --delete --rsync-path="sudo rsync" rpi:/lib/arm-linux-gnueabihf/ ~/rpi/sysroot/lib/arm-linux-gnueabihf/
+rsync -a --delete --rsync-path="sudo rsync" rpi:/lib/ld-linux-armhf.so.3 ~/rpi/sysroot/lib/
+```
+
+---
+
+### Lighttpd Verification
 
 Check Lighttpd service status:
 
@@ -8,7 +39,43 @@ Check Lighttpd service status:
 sudo systemctl status lighttpd.service
 ```
 
-Get Raspberry Pi IP address:
+Expected:
+
+- loaded
+- enabled
+- running
+
+---
+
+### Start Lighttpd service
+
+```bash
+sudo systemctl start lighttpd.service
+```
+
+---
+
+### Reload configuration
+
+```bash
+sudo service lighttpd force-reload
+```
+
+Configuration reload works only if the service is already running.
+
+---
+
+### Service logs
+
+Check recent service logs and configuration errors:
+
+```bash
+sudo journalctl -u lighttpd.service -n 20
+```
+
+---
+
+### Get Raspberry Pi IP address
 
 ```bash
 hostname -I
@@ -20,23 +87,37 @@ Example:
 192.168.86.72
 ```
 
+Use the IPv4 address for browser access.
+
 ---
 
 ## Default Web Content
 
-Check current web root contents:
+### Check document root contents
 
 ```bash
 ls -l /var/www/html
 ```
 
-Find default Lighttpd page:
+If the folder is empty, Lighttpd returns HTTP 403.
+
+---
+
+### Find default Lighttpd page
 
 ```bash
 sudo find /usr/share -name index.html 2>/dev/null
 ```
 
-Copy default page to web root:
+Typical location:
+
+```text
+/usr/share/lighttpd/index.html
+```
+
+---
+
+### Copy default page to web root
 
 ```bash
 sudo cp /usr/share/lighttpd/index.html /var/www/html/index.html
@@ -44,7 +125,7 @@ sudo cp /usr/share/lighttpd/index.html /var/www/html/index.html
 
 ---
 
-## HTTP Test
+### HTTP test
 
 Test server access from another machine:
 
@@ -52,23 +133,72 @@ Test server access from another machine:
 curl http://192.168.86.72
 ```
 
+Save response:
+
+```bash
+curl http://192.168.86.72 > results/placeholderpage.html
+```
+
 ---
 
-# Access Logs and Debugging
+## Access Logs and Debugging
 
-## Monitor access log
+### Enable access log module
+
+```bash
+sudo lighty-enable-mod accesslog
+```
+
+Apply configuration:
+
+```bash
+sudo service lighttpd force-reload
+```
+
+---
+
+### Inspect enabled modules
+
+```bash
+ls /etc/lighttpd/conf-enabled/
+```
+
+---
+
+### Check access log configuration
+
+Open configuration:
+
+```bash
+sudo nano /etc/lighttpd/conf-enabled/10-accesslog.conf
+```
+
+Example:
+
+```text
+accesslog.filename = "/var/log/lighttpd/access.log"
+```
+
+---
+
+### Monitor access log
 
 ```bash
 sudo tail -f /var/log/lighttpd/access.log
 ```
 
-Shows incoming HTTP requests, client IP addresses, request methods, and response status codes.
+Shows:
+
+- incoming HTTP requests
+- client IP addresses
+- HTTP methods
+- response status codes
 
 ---
 
-## Enable verbose debug logging
+### Enable verbose debug logging
 
-Open Lighttpd main configuration:
+Open Lighttpd configuration:
 
 ```bash
 sudo nano /etc/lighttpd/lighttpd.conf
@@ -93,27 +223,27 @@ sudo service lighttpd force-reload
 
 ---
 
-## Monitor verbose logs
+### Monitor verbose logs
 
 ```bash
 sudo tail -f /var/log/lighttpd/error.log
 ```
 
-Verbose logs help inspect:
+Useful for inspecting:
 
 - HTTP request headers
 - HTTP response headers
 - URI parsing
 - logical to physical path mapping
-- file access problems
-- CGI execution issues
+- CGI execution problems
+- file access issues
 - timeout handling
 
 ---
 
-# HTTPS / SSL Configuration
+## HTTPS / SSL Configuration
 
-## Create self-signed certificate
+### Create self-signed certificate
 
 Create certificate directory:
 
@@ -141,9 +271,9 @@ sudo chmod 400 /etc/lighttpd/certs/lighttpd.pem
 
 ---
 
-## Enable HTTPS support
+### Enable HTTPS support
 
-Open Lighttpd configuration:
+Open configuration:
 
 ```bash
 sudo nano /etc/lighttpd/lighttpd.conf
@@ -170,28 +300,39 @@ Restart service:
 sudo systemctl restart lighttpd
 ```
 
-Verify service status:
+Verify service:
 
 ```bash
 sudo systemctl status lighttpd.service
 ```
 
+Expected:
+
+- active (running)
+- no fatal configuration errors
+
+Browser certificate warnings are expected because the certificate is self-signed.
+
 ---
 
-## HTTPS tests
+### HTTPS tests
 
-Browser test:
+Browser:
 
 ```text
 https://192.168.86.72
 ```
 
-Self-signed certificate warnings are expected.
-
 Test using curl:
 
 ```bash
 curl --insecure https://192.168.86.72
+```
+
+Save HTTPS page:
+
+```bash
+curl --insecure https://192.168.86.72 > results/httpspage.html
 ```
 
 Verify TLS connection:
@@ -200,21 +341,31 @@ Verify TLS connection:
 curl -k -v https://192.168.86.72
 ```
 
+Detailed TLS verification:
+
+```bash
+curl -k -v https://192.168.86.72 2>&1 | grep -E "Connected|SSL connection|HTTP/2|:scheme"
+```
+
 ---
 
-# Static Web Pages
+## Static Web Pages
 
-## Document root
-
-Check document root contents:
+### Check document root permissions
 
 ```bash
 ls -l /var/www/html
 ```
 
+Verify:
+
+- document root path
+- file ownership
+- read permissions for web server
+
 ---
 
-## Replace default Lighttpd page
+### Replace default Lighttpd page
 
 Create backup directory:
 
@@ -228,25 +379,41 @@ Move original page:
 sudo mv /var/www/html/index.html /var/www/html/orig/
 ```
 
-Create custom index page:
+Without index.html the server returns HTTP 403.
+
+---
+
+### Create custom index page
 
 ```bash
 sudo nano /var/www/html/index.html
 ```
 
-After deployment, the custom page becomes accessible through the Lighttpd web server.
+After deployment the custom page becomes accessible through the Lighttpd server.
 
 ---
 
-# Lighttpd + CGI Setup
+### Verify custom pages
 
-## Enable CGI module
+```bash
+curl -k https://192.168.86.72/orig/ > results/original_page.html
+```
+
+```bash
+curl -k https://192.168.86.72 > results/custom_page.html
+```
+
+---
+
+## Lighttpd + CGI Setup
+
+### Enable CGI module
 
 ```bash
 sudo lighty-enable-mod cgi
 ```
 
-Verify that the symlink was created:
+Verify symlink:
 
 ```bash
 ls -l /etc/lighttpd/conf-enabled/
@@ -260,7 +427,7 @@ Expected:
 
 ---
 
-## Configure CGI handlers
+### Configure CGI handlers
 
 Open configuration:
 
@@ -268,7 +435,7 @@ Open configuration:
 sudo nano /etc/lighttpd/conf-enabled/10-cgi.conf
 ```
 
-Replace the default assignment:
+Replace:
 
 ```text
 cgi.assign = ( "" => "" )
@@ -286,7 +453,7 @@ cgi.assign = (
 
 ---
 
-## Disable HTTP/2
+### Disable HTTP/2
 
 Lighttpd CGI handling was more stable with HTTP/2 disabled.
 
@@ -311,9 +478,9 @@ sudo systemctl restart lighttpd
 
 ---
 
-# Python CGI
+## Python CGI
 
-## Deploy Python CGI script
+### Deploy Python CGI script
 
 Copy script:
 
@@ -327,19 +494,23 @@ Make executable:
 sudo chmod +x /usr/lib/cgi-bin/pydemo.py
 ```
 
-Test in browser:
+---
+
+### Python CGI tests
+
+Browser:
 
 ```text
 http://192.168.86.72/cgi-bin/pydemo.py
 ```
 
-Test using curl:
+Curl:
 
 ```bash
 curl -i http://192.168.86.72/cgi-bin/pydemo.py
 ```
 
-HTTPS test:
+HTTPS:
 
 ```bash
 curl -k -i https://192.168.86.72/cgi-bin/pydemo.py
@@ -347,9 +518,33 @@ curl -k -i https://192.168.86.72/cgi-bin/pydemo.py
 
 ---
 
-# GPIO CGI Applications
+### CGI troubleshooting
 
-## Deploy GPIO CGI binaries
+If Lighttpd returns HTTP 500:
+
+Run script directly:
+
+```bash
+python3 /usr/lib/cgi-bin/pydemo.py
+```
+
+Run executable directly:
+
+```bash
+/usr/lib/cgi-bin/pydemo.py
+```
+
+Run as Lighttpd user:
+
+```bash
+sudo runuser -u www-data -- /usr/lib/cgi-bin/pydemo.py
+```
+
+---
+
+## GPIO CGI Applications
+
+### Deploy GPIO CGI binaries
 
 Copy binaries from host:
 
@@ -367,7 +562,7 @@ sudo mv /tmp/gpio-led-off /usr/lib/cgi-bin/ledoff.cgi
 
 ---
 
-## GPIO permissions
+### GPIO permissions
 
 CGI applications run as user `www-data`.
 
@@ -383,9 +578,11 @@ Restart Lighttpd:
 sudo systemctl restart lighttpd
 ```
 
+The restart is required because CGI child processes inherit group memberships from the Lighttpd service process.
+
 ---
 
-## GPIO CGI tests
+### GPIO CGI tests
 
 LED ON:
 
@@ -399,7 +596,7 @@ LED OFF:
 http://192.168.86.72/cgi-bin/ledoff.cgi
 ```
 
-Check logs:
+Verify logs:
 
 ```bash
 cat /tmp/led.log
@@ -408,9 +605,11 @@ tail -f /tmp/led.log
 
 ---
 
-# CGI Query Parameters
+## CGI Query Parameters
 
-The query CGI application parses HTTP query parameters from the CGI environment variable:
+CGI applications receive HTTP query parameters through environment variables.
+
+The query string is available via:
 
 ```text
 QUERY_STRING
@@ -423,15 +622,16 @@ servoposition=90
 led=on
 ```
 
-The application:
+The query CGI application:
 
 - parses URL query parameters
-- prints parsed values in browser
+- extracts parameter values
+- generates browser output
 - writes events to `/tmp/cgi.log`
 
 ---
 
-## Deploy query CGI application
+### Deploy query CGI application
 
 Copy binary from host:
 
@@ -447,7 +647,7 @@ sudo mv /tmp/query-cgi /usr/lib/cgi-bin/env-cgi.cgi
 
 ---
 
-## Query CGI tests
+### Query CGI tests
 
 Without parameters:
 
@@ -461,7 +661,7 @@ With parameters:
 http://192.168.86.72/cgi-bin/env-cgi.cgi?servoposition=90&led=on
 ```
 
-Check logs:
+Verify logs:
 
 ```bash
 cat /tmp/cgi.log
@@ -470,9 +670,9 @@ tail -f /tmp/cgi.log
 
 ---
 
-# Polling Demo
+## Polling Demo
 
-## Deploy polling CGI application
+### Deploy polling CGI application
 
 Copy binary from host:
 
@@ -486,7 +686,7 @@ Install on Raspberry Pi:
 sudo mv /tmp/polling-time-cgi /usr/lib/cgi-bin/time.cgi
 ```
 
-Test:
+Test endpoint:
 
 ```text
 http://192.168.86.72/cgi-bin/time.cgi
@@ -494,7 +694,7 @@ http://192.168.86.72/cgi-bin/time.cgi
 
 ---
 
-## Deploy polling HTML page
+### Deploy polling HTML page
 
 Copy HTML page:
 
@@ -516,7 +716,7 @@ https://192.168.86.72/poll-demo.html
 
 ---
 
-# Cross-Origin Resource Sharing (CORS)
+## Cross-Origin Resource Sharing (CORS)
 
 Modern browsers restrict JavaScript requests across origins unless the server explicitly allows them.
 
@@ -524,7 +724,7 @@ The polling demo requires enabling CORS headers for CGI responses.
 
 ---
 
-## Enable mod_setenv
+### Enable mod_setenv
 
 ```bash
 sudo lighty-enable-mod setenv
@@ -532,7 +732,7 @@ sudo lighty-enable-mod setenv
 
 ---
 
-## Configure CORS headers
+### Configure CORS headers
 
 Open configuration:
 
@@ -548,7 +748,7 @@ setenv.add-response-header += (
 )
 ```
 
-Apply configuration changes:
+Restart Lighttpd:
 
 ```bash
 sudo systemctl restart lighttpd
@@ -556,7 +756,7 @@ sudo systemctl restart lighttpd
 
 ---
 
-## Verify browser requests
+### Browser debugging
 
 Browser developer tools can be used to inspect:
 
@@ -568,7 +768,7 @@ Browser developer tools can be used to inspect:
 
 ---
 
-# CPU Load Monitoring
+## CPU Load Monitoring
 
 Monitor CPU usage during polling tests:
 
