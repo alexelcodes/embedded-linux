@@ -1,4 +1,4 @@
-# Implementation Notes
+# Development Notes
 
 Simple multi-purpose controller using a Raspberry Pi.  
 The device has two operating modes: **LED control** and **servo control**.
