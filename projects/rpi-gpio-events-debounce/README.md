@@ -2,7 +2,7 @@
 
 GPIO event handling project using `libgpiod`, POSIX threads, and C on Raspberry Pi.
 
-The project detects button events using GPIO edge interrupts and filters switch bouncing with a simple software debounce mechanism.
+The project detects button events using GPIO edge detection and filters switch bouncing with a simple software debounce mechanism.
 
 ---
 
@@ -14,7 +14,6 @@ The project detects button events using GPIO edge interrupts and filters switch 
 - LED output control
 - POSIX thread for GPIO event handling
 - software debounce
-- non-blocking main loop behavior
 
 ---
 
@@ -48,16 +47,22 @@ The project detects button events using GPIO edge interrupts and filters switch 
 
 ---
 
+## Build
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+---
+
 ## Run
 
 ```bash
 ./rpi_gpio_events_debounce
 ```
-
-The program starts two main activities:
-
-1. the main loop updates LED outputs
-2. a separate thread waits for GPIO button events
 
 Detected button presses are printed to the terminal.
 
@@ -72,8 +77,6 @@ The button GPIO line is configured to detect both edges:
 
 A separate POSIX thread waits for GPIO events using `gpiod_line_event_wait()`.
 
-This prevents the main loop from being blocked by GPIO event waiting.
-
 The debounce logic ignores repeated edges that occur inside a short debounce time window.
 
 ---
@@ -83,8 +86,6 @@ The debounce logic ignores repeated edges that occur inside a short debounce tim
 Mechanical buttons do not produce a clean single transition.
 
 When pressed or released, the signal may rapidly switch between HIGH and LOW several times before settling.
-
-This is called switch bouncing.
 
 Without debounce, one physical button press may be detected as multiple presses.
 
@@ -109,11 +110,3 @@ Without debounce, one physical button press may be detected as multiple presses.
 └── src
     └── gpio-events-debounce.c
 ```
-
----
-
-## Notes
-
-This project uses the Linux GPIO character device interface through `libgpiod`.
-
-GPIO event handling is more efficient than repeatedly polling the input state in a loop.
